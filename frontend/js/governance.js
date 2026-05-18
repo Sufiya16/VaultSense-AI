@@ -20,12 +20,24 @@ async function loadGovernance() {
             .join("");
 
     document.getElementById("shapPlots").innerHTML = `
-        <h3>Global SHAP Feature Importance</h3>
-        <img src="${data.shap_bar_url}" width="100%">
+     <h3>Global SHAP Feature Importance</h3>
 
-        <h3>SHAP Summary Plot</h3>
-        <img src="${data.shap_summary_url}" width="100%">
-    `;
+     <img
+        src="./assets/shap_bar.png"
+        class="shap-img"
+        alt="SHAP Feature Importance"
+     />
+
+    <h3 style="margin-top:30px;">
+        SHAP Summary Plot
+    </h3>
+
+    <img
+        src="./assets/shap_summary.png"
+        class="shap-img"
+        alt="SHAP Summary"
+    />
+`;
 
     const audits = data.audit_records || [];
 
