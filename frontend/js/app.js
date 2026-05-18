@@ -61,7 +61,11 @@ async function predictRisk() {
 
         has_collateral:
             document.getElementById("collateral").value,
+        co_applicant_available:
+       parseInt(document.getElementById("co_applicant").value),
 
+       nominee_available:
+    parseInt(document.getElementById("nominee").value),
         bureau_enquiries_6m:
             parseInt(document.getElementById("bureau").value),
 
@@ -103,7 +107,7 @@ async function predictRisk() {
     `;
 
     document.getElementById("reasons").innerHTML =
-        result.warnings
+        result.reason_codes
         .map(w => `<div class="reason">⚠ ${w}</div>`)
         .join("");
 }
