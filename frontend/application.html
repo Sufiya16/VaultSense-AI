@@ -1,137 +1,129 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>VaultSense AI - Application</title>
+
+    <title>VaultSense AI</title>
+
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
 
 <div class="sidebar">
+
     <h2>VaultSense AI</h2>
+
     <a href="application.html">1. Application</a>
     <a href="portfolio.html">2. Portfolio Database</a>
     <a href="governance.html">3. Governance & Audit</a>
+
 </div>
 
 <div class="main">
 
-    <h1>Loan Application Decision Workspace</h1>
-    <p class="subtitle">AI-assisted credit underwriting for loan officers</p>
+    <h1>Loan Underwriting Application</h1>
 
-    <div class="grid">
+    <p class="subtitle">
+        Credit risk intake and underwriting workflow.
+    </p>
 
-        <div class="card">
-            <h2>Applicant Intake Form</h2>
+    <div class="card">
 
-            <h3>Customer Information</h3>
+        <div class="form-grid">
 
-            <label>Customer ID</label>
-            <input id="customer_id" placeholder="Enter Customer ID">
+            <input id="customer_name" placeholder="Customer Name">
 
-            <label>Customer Name</label>
-            <input id="customer_name" placeholder="Enter Full Name">
+            <input id="customer_id" placeholder="Customer ID">
 
-            <label>Age</label>
-            <input id="age" placeholder="Enter Age">
+            <input id="age" placeholder="Age">
 
-            <label>Gender</label>
             <select id="gender">
-                <option value="">Select Gender</option>
                 <option>Male</option>
                 <option>Female</option>
             </select>
 
-            <label>Education</label>
-            <select id="education">
-                <option value="">Select Education</option>
-                <option>Graduate</option>
-                <option>Post_Graduate</option>
-                <option>Undergraduate</option>
-                <option>Diploma</option>
-                <option>No_Formal</option>
+            <select id="state">
+                <option>MH</option>
+                <option>DL</option>
+                <option>KA</option>
+                <option>GJ</option>
             </select>
 
-            <h3>Employment & Income</h3>
+            <select id="urban_rural">
+                <option>Urban</option>
+                <option>Semi_Urban</option>
+                <option>Rural</option>
+            </select>
 
-            <label>Employment Years</label>
-            <input id="employment_years" placeholder="Years at Current Employment">
+            <select id="employment_type">
+                <option>Salaried</option>
+                <option>Self_Employed</option>
+                <option>Business_Owner</option>
+                <option>Government</option>
+            </select>
 
-            <label>Annual Income</label>
-            <input id="income" placeholder="Annual Income in INR">
+            <input id="employment_years" placeholder="Employment Years">
 
-            <h3>Loan Details</h3>
+            <input id="income" placeholder="Annual Income">
 
-            <label>Loan Type</label>
             <select id="loan_type">
-                <option value="">Select Loan Type</option>
-                <option>Personal_Loan</option>
                 <option>Home_Loan</option>
-                <option>Auto_Loan</option>
+                <option>Personal_Loan</option>
                 <option>Education_Loan</option>
-                <option>MSME_Loan</option>
-                <option>Gold_Loan</option>
+                <option>Auto_Loan</option>
             </select>
 
-            <label>Loan Amount</label>
-            <input id="loan_amount" placeholder="Requested Loan Amount">
+            <input id="loan_amount" placeholder="Loan Amount">
 
-            <label>Collateral Status</label>
-            <select id="has_collateral">
-                <option value="">Select Collateral Status</option>
-                <option value="0">No Collateral</option>
-                <option value="1">Collateral Available</option>
+            <input id="loan_tenure" placeholder="Loan Tenure (Months)">
+
+            <input id="interest_rate" placeholder="Interest Rate %">
+
+            <input id="credit_score" placeholder="Credit Score">
+
+            <input id="existing_loans" placeholder="Existing Loans">
+
+            <input id="dti" placeholder="DTI Ratio">
+
+            <input id="ltv" placeholder="LTV Ratio">
+
+            <input id="savings" placeholder="Savings Balance">
+
+            <input id="bureau" placeholder="Bureau Enquiries">
+
+            <input id="missed" placeholder="Missed Payments">
+
+            <select id="collateral">
+                <option>Yes</option>
+                <option>No</option>
             </select>
 
-            <label>Co-applicant Status</label>
-            <select id="co_applicant_available">
-                <option value="">Select Co-applicant Status</option>
-                <option value="0">No Co-applicant</option>
-                <option value="1">Co-applicant Available</option>
-            </select>
-
-            <label>Nominee Status</label>
-            <select id="nominee_available">
-                <option value="">Select Nominee Status</option>
-                <option value="1">Nominee Available</option>
-                <option value="0">No Nominee</option>
-            </select>
-
-            <h3>Credit History</h3>
-
-            <label>Credit Score</label>
-            <input id="credit_score" placeholder="Bureau Credit Score">
-
-            <label>DTI Ratio</label>
-            <input id="dti" placeholder="Debt-to-Income Ratio">
-
-            <label>Bureau Enquiries</label>
-            <input id="bureau" placeholder="Credit Bureau Enquiries in Last 6 Months">
-
-            <label>Past Missed Payments</label>
-            <input id="missed" placeholder="Missed EMI Payments in Last 2 Years">
-
-            <button onclick="submitApplication()">Evaluate Application</button>
         </div>
 
-        <div class="card">
-            <h2>Credit Decision</h2>
-            <div id="result">Awaiting application...</div>
-            <canvas id="riskChart"></canvas>
+        <button onclick="predictRisk()">
+            Evaluate Application
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Decision Result</h2>
+
+        <div id="output">
+            Waiting for underwriting decision...
         </div>
 
     </div>
 
     <div class="card">
-        <h2>Decision Reasons for Credit Officer</h2>
-        <div id="warnings">Reasons will appear after evaluation.</div>
-    </div>
 
-    <div class="card">
-        <h2>Officer Override Note</h2>
-        <input placeholder="Enter override reason if officer disagrees with system decision">
-        <button>Save Override Note</button>
+        <h2>Risk Explanations</h2>
+
+        <div id="reasons"></div>
+
     </div>
 
 </div>

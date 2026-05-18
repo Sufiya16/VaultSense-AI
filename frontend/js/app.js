@@ -1,131 +1,109 @@
-let chartInstance = null;
+async function predictRisk() {
 
-function getNumber(id) {
-    const value = document.getElementById(id).value;
-
-    if (value === "" || isNaN(value)) {
-        alert(`Please enter a valid value for ${id}.`);
-        throw new Error(`Invalid value: ${id}`);
-    }
-
-    return Number(value);
-}
-
-function getText(id) {
-    const value = document.getElementById(id).value.trim();
-
-    if (value === "") {
-        alert(`Please enter ${id}.`);
-        throw new Error(`Missing value: ${id}`);
-    }
-
-    return value;
-}
-
-function getSelect(id) {
-    const value = document.getElementById(id).value;
-
-    if (value === "") {
-        alert(`Please select ${id}.`);
-        throw new Error(`Missing selection: ${id}`);
-    }
-
-    return value;
-}
-
-async function submitApplication() {
     const payload = {
-        customer_id: getText("customer_id"),
-        customer_name: getText("customer_name"),
 
-        age: getNumber("age"),
-        gender: getSelect("gender"),
-        education: getSelect("education"),
-        state: "MH",
-        urban_rural: "Urban",
+        customer_name:
+            document.getElementById("customer_name").value,
 
-        employment_type: "Salaried",
-        employment_years: getNumber("employment_years"),
-        annual_income_inr: getNumber("income"),
+        customer_id:
+            document.getElementById("customer_id").value,
 
-        loan_type: getSelect("loan_type"),
-        loan_purpose: "General",
-        loan_amount_inr: getNumber("loan_amount"),
-        loan_tenure_months: 24,
-        interest_rate_pct: 10,
+        age:
+            parseInt(document.getElementById("age").value),
 
-        credit_score: getNumber("credit_score"),
-        num_existing_loans: 1,
-        dti_ratio: getNumber("dti"),
-        ltv_ratio: null,
-        has_collateral: Number(getSelect("has_collateral")),
+        gender:
+            document.getElementById("gender").value,
 
-        bureau_enquiries_6m: getNumber("bureau"),
-        missed_payments_2y: getNumber("missed"),
-        savings_account_balance_inr: 50000,
+        state:
+            document.getElementById("state").value,
 
-        co_applicant_available: Number(getSelect("co_applicant_available")),
-        nominee_available: Number(getSelect("nominee_available"))
+        urban_rural:
+            document.getElementById("urban_rural").value,
+
+        employment_type:
+            document.getElementById("employment_type").value,
+
+        employment_years:
+            parseInt(document.getElementById("employment_years").value),
+
+        annual_income_inr:
+            parseFloat(document.getElementById("income").value),
+
+        loan_type:
+            document.getElementById("loan_type").value,
+
+        loan_purpose:
+            "General",
+
+        loan_amount_inr:
+            parseFloat(document.getElementById("loan_amount").value),
+
+        loan_tenure_months:
+            parseInt(document.getElementById("loan_tenure").value),
+
+        interest_rate_pct:
+            parseFloat(document.getElementById("interest_rate").value),
+
+        credit_score:
+            parseInt(document.getElementById("credit_score").value),
+
+        num_existing_loans:
+            parseInt(document.getElementById("existing_loans").value),
+
+        dti_ratio:
+            parseFloat(document.getElementById("dti").value),
+
+        ltv_ratio:
+            parseFloat(document.getElementById("ltv").value),
+
+        savings_account_balance_inr:
+            parseFloat(document.getElementById("savings").value),
+
+        has_collateral:
+            document.getElementById("collateral").value,
+
+        bureau_enquiries_6m:
+            parseInt(document.getElementById("bureau").value),
+
+        missed_payments_2y:
+            parseInt(document.getElementById("missed").value)
     };
 
-    const result = await assessRisk(payload);
-
-    const riskClass =
-        result.risk_band === "HIGH" ? "high" :
-        result.risk_band === "MEDIUM" ? "medium" : "low";
-
-    document.getElementById("result").innerHTML = `
-        <p><b>Customer:</b> ${result.customer_name} (${result.customer_id})</p>
-
-        <div class="metric ${riskClass}">
-            ${result.risk_percentage}%
-        </div>
-
-        <p><b>Risk Classification:</b> ${result.risk_band}</p>
-        <p><b>ML Recommendation:</b> ${result.ml_decision}</p>
-        <p><b>Final Credit Decision:</b> ${result.decision}</p>
-
-        <p><b>Recommendation:</b><br>${result.recommendation}</p>
-
-        <p><b>Model Version:</b> ${result.model_version}</p>
-        <p><b>Threshold Used:</b> ${result.threshold_used}</p>
-    `;
-
-    document.getElementById("warnings").innerHTML = `
-        <h3>Model Reason Codes</h3>
-        ${result.reason_codes.map(reason => `<div class="reason">${reason}</div>`).join("")}
-
-        <h3>Policy Rules Triggered</h3>
-        ${result.policy_rules_triggered.map(rule => `<div class="reason">${rule}</div>`).join("")}
-    `;
-
-    const ctx = document.getElementById("riskChart");
-
-    if (chartInstance) chartInstance.destroy();
-
-    chartInstance = new Chart(ctx, {
-        type: "doughnut",
-        data: {
-            labels: ["Default Risk", "Remaining Confidence"],
-            datasets: [{
-                data: [
-                    result.risk_percentage,
-                    100 - result.risk_percentage
-                ],
-                backgroundColor: [
-                    "#3b82f6",
-                    "#64748b"
-                ]
-            }]
-        },
-        options: {
-            plugins: {
-                legend: {
-                    labels: {
-                        color: "white"
-                    }
-                }
-            }
+    const response = await fetch(
+        `${API_BASE}/assess`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         }
-    });
+    );
+
+    const result = await response.json();
+
+    document.getElementById("output").innerHTML = `
+
+        <h3>${result.decision}</h3>
+
+        <p>
+            <strong>Risk Score:</strong>
+            ${result.risk_percentage}%
+        </p>
+
+        <p>
+            <strong>Risk Band:</strong>
+            ${result.risk_band}
+        </p>
+
+        <p>
+            <strong>Recommendation:</strong>
+            ${result.recommendation}
+        </p>
+    `;
+
+    document.getElementById("reasons").innerHTML =
+        result.warnings
+        .map(w => `<div class="reason">⚠ ${w}</div>`)
+        .join("");
 }

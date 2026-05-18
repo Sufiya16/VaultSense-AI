@@ -1,3 +1,4 @@
+
 import os
 import json
 import joblib
@@ -53,30 +54,40 @@ def health():
 
 
 def get_risk_band(probability):
-    if probability < 0.25:
+
+    if probability < 0.35:
         return "LOW"
-    elif probability < 0.50:
+
+    elif probability < 0.65:
         return "MEDIUM"
+
     return "HIGH"
 
 
 def ml_decision(probability):
-    if probability < 0.40:
+
+    if probability < 0.35:
         return "APPROVE"
-    elif probability < 0.65:
+
+    elif probability < 0.70:
         return "MANUAL REVIEW"
+
     return "REJECT"
 
 
 def generate_reason_codes(data):
+
     reasons = []
+
     secured = data["has_collateral"] == 1
 
     if data["credit_score"] < 650:
+
         if secured:
             reasons.append(
                 "Credit score is below preferred policy levels, but collateral partially reduces recovery risk."
             )
+
         else:
             reasons.append(
                 "Low bureau credit score increases default risk, especially for unsecured lending."
@@ -89,7 +100,7 @@ def generate_reason_codes(data):
 
     if data["bureau_enquiries_6m"] >= 5:
         reasons.append(
-            "Frequent recent bureau enquiries may indicate credit hunger."
+            "Frequent recent bureau enquiries may indicate elevated credit demand behaviour."
         )
 
     if data["missed_payments_2y"] >= 2:
@@ -104,22 +115,50 @@ def generate_reason_codes(data):
 
     if data["loan_amount_inr"] > data["annual_income_inr"] * 3:
         reasons.append(
-            "Requested loan amount is high compared to annual income and requires policy review."
+            "Requested loan amount is high relative to annual income and requires additional underwriting review."
         )
 
-    if data["has_collateral"] == 0 and data["loan_type"] in ["Personal_Loan", "MSME_Loan"]:
+    if (
+        data["has_collateral"] == 0
+        and data["loan_type"] in ["Personal_Loan", "MSME_Loan"]
+    ):
         reasons.append(
             "Unsecured exposure increases recovery risk."
         )
 
-    if data["co_applicant_available"] == 0 and data["loan_amount_inr"] > 1000000:
+    if (
+        data["co_applicant_available"] == 0
+        and data["loan_amount_inr"] > 1000000
+    ):
         reasons.append(
-            "Large loan without a co-applicant increases repayment dependency risk."
+            "Large exposure without co-applicant increases repayment dependency risk."
         )
 
     if data["nominee_available"] == 0:
         reasons.append(
-            "Nominee details are missing and should be reviewed before disbursal."
+            "Nominee details are unavailable and should be verified before disbursal."
+        )
+
+    if data["loan_tenure_months"] > 180:
+        reasons.append(
+            "Long repayment tenure increases long-term repayment uncertainty."
+        )
+
+    if (
+        data["savings_account_balance_inr"] < 50000
+        and data["annual_income_inr"] < 400000
+    ):
+        reasons.append(
+            "Low savings buffer may reduce financial resilience during repayment stress."
+        )
+
+    if (
+        data["loan_type"] == "Home_Loan"
+        and data["has_collateral"] == 1
+        and data["credit_score"] > 720
+    ):
+        reasons.append(
+            "Secured housing exposure with strong bureau profile supports lower default risk."
         )
 
     if not reasons:
@@ -357,8 +396,8 @@ def get_governance():
         "model_type": "Best selected from Logistic Regression, XGBoost, and LightGBM",
         "threshold": round(float(threshold), 4),
         "metrics": metrics,
-        "shap_summary_url": "http://127.0.0.1:8000/reports/shap_summary.png",
-        "shap_bar_url": "http://127.0.0.1:8000/reports/shap_bar.png",
+        "shap_summary_url": "/reports/shap_summary.png",
+        "shap_bar_url": "/reports/shap_bar.png",
         "audit_records": audit_records,
         "governance_notes": [
             "The ML model estimates Probability of Default.",
