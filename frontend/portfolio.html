@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portfolio Database</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body onload="loadPortfolio()">
+
+<div class="sidebar">
+    <h2>VaultSense AI</h2>
+    <a href="application.html">1. Application</a>
+    <a href="portfolio.html">2. Portfolio Database</a>
+    <a href="governance.html">3. Governance & Audit</a>
+</div>
+
+<div class="main">
+    <h1>Loan Portfolio Database</h1>
+
+    <div class="card">
+        <h2>Recent Loan Decisions</h2>
+        <p>This screen represents the bank’s decision database/log.</p>
+        <div id="portfolioTable">Loading...</div>
+    </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/portfolio.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+    "Logistic Regression": {
+        "AUC_ROC": 0.8977,
+        "PR_AUC": 0.8279,
+        "F1_SCORE": 0.722
+    },
+    "XGBoost": {
+        "AUC_ROC": 0.8898,
+        "PR_AUC": 0.8166,
+        "F1_SCORE": 0.7146
+    },
+    "LightGBM": {
+        "AUC_ROC": 0.8861,
+        "PR_AUC": 0.8134,
+        "F1_SCORE": 0.7173
+    }
+}

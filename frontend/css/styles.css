@@ -1,0 +1,156 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b1220;
+    color: white;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #111827;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding-top: 20px;
+}
+
+.sidebar h2 {
+    text-align: center;
+    color: #3b82f6;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 15px 25px;
+}
+
+.sidebar a:hover {
+    background: #1f2937;
+}
+
+.main {
+    margin-left: 270px;
+    padding: 25px;
+}
+
+.subtitle {
+    color: #94a3b8;
+    margin-top: -10px;
+    margin-bottom: 25px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: #111827;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    color: #cbd5e1;
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+
+h3 {
+    color: #93c5fd;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 6px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: #1f2937;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #3b82f6;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #2563eb;
+}
+
+.metric {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.low {
+    color: #22c55e;
+}
+
+.medium {
+    color: #f59e0b;
+}
+
+.high {
+    color: #ef4444;
+}
+
+.reason {
+    background: #1f2937;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+    line-height: 1.5;
+}
+
+canvas {
+    max-width: 320px;
+    max-height: 320px;
+    margin: 20px auto;
+    display: block;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #334155;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    color: #93c5fd;
+}
+
+pre {
+    background: #1f2937;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    color: #e5e7eb;
+}

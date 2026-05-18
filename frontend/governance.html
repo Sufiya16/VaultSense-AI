@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Governance & Audit</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body onload="loadGovernance()">
+
+<div class="sidebar">
+
+    <h2>VaultSense AI</h2>
+
+    <a href="application.html">1. Application</a>
+    <a href="portfolio.html">2. Portfolio Database</a>
+    <a href="governance.html">3. Governance & Audit</a>
+
+</div>
+
+<div class="main">
+
+    <h1>Governance, Explainability & Audit</h1>
+
+    <p class="subtitle">
+        Model governance, compliance review, explainability, and audit monitoring.
+    </p>
+
+    <!-- MODEL INFO -->
+
+    <div class="grid">
+
+        <div class="card">
+
+            <h2>Model Governance</h2>
+
+            <div id="modelInfo">
+                Loading governance details...
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Compliance Notes</h2>
+
+            <div id="governanceNotes">
+                Loading compliance notes...
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SHAP -->
+
+    <div class="card">
+
+        <h2>Model Explainability</h2>
+
+        <p>
+            These visualizations explain the primary drivers
+            influencing Probability of Default predictions.
+        </p>
+
+        <div id="shapPlots">
+            Loading explainability plots...
+        </div>
+
+    </div>
+
+    <!-- AUDIT -->
+
+    <div class="card">
+
+        <h2>Decision Audit Trail</h2>
+
+        <p>
+            Historical decision logs for governance
+            and model review purposes.
+        </p>
+
+        <div id="auditTable">
+            Loading audit records...
+        </div>
+
+    </div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/governance.js"></script>
+
+</body>
+</html>

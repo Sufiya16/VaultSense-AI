@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Explainability</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <h2>VaultSense AI</h2>
+
+        <a href="application.html">Application</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="explainability.html">Explainability</a>
+        <a href="governance.html">Governance</a>
+
+    </div>
+
+    <!-- MAIN -->
+
+    <div class="main">
+
+        <h1>Model Explainability</h1>
+
+        <!-- GLOBAL FEATURE IMPORTANCE -->
+
+        <div class="card">
+
+            <h2>Top Drivers of Default Risk</h2>
+
+            <img
+                src="../artifacts/shap_feature_importance.png"
+                width="100%"
+            >
+
+        </div>
+
+        <!-- SHAP SUMMARY -->
+
+        <div class="card">
+
+            <h2>SHAP Summary Plot</h2>
+
+            <img
+                src="../artifacts/shap_summary.png"
+                width="100%"
+            >
+
+        </div>
+
+        <!-- BUSINESS EXPLANATION -->
+
+        <div class="card">
+
+            <h2>Business Interpretation</h2>
+
+            <ul>
+
+                <li>
+                    High DTI ratio strongly increases
+                    default probability.
+                </li>
+
+                <li>
+                    Lower credit scores contribute
+                    heavily toward risky classification.
+                </li>
+
+                <li>
+                    Multiple missed payments are
+                    highly predictive of delinquency.
+                </li>
+
+                <li>
+                    Strong income and stable employment
+                    reduce predicted risk.
+                </li>
+
+                <li>
+                    Bureau enquiries are early signals
+                    of credit stress.
+                </li>
+
+            </ul>
+
+        </div>
+
+        <!-- WATERFALL -->
+
+        <div class="card">
+
+            <h2>Applicant-Level Explanation</h2>
+
+            <img
+                src="../artifacts/waterfall_0.png"
+                width="100%"
+            >
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
