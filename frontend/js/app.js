@@ -1,113 +1,155 @@
-async function predictRisk() {
+let chartInstance = null;
 
+function getNumber(id) {
+    const value = document.getElementById(id).value;
+
+    if (value === "" || isNaN(value)) {
+        alert(`Please enter a valid value for ${id}.`);
+        throw new Error(`Invalid value: ${id}`);
+    }
+
+    return Number(value);
+}
+
+function getOptionalNumber(id) {
+    const value = document.getElementById(id).value;
+
+    if (value === "") {
+        return null;
+    }
+
+    if (isNaN(value)) {
+        alert(`Please enter a valid value for ${id}.`);
+        throw new Error(`Invalid value: ${id}`);
+    }
+
+    return Number(value);
+}
+
+function getText(id) {
+    const value = document.getElementById(id).value.trim();
+
+    if (value === "") {
+        alert(`Please enter ${id}.`);
+        throw new Error(`Missing value: ${id}`);
+    }
+
+    return value;
+}
+
+function getSelect(id) {
+    const value = document.getElementById(id).value;
+
+    if (value === "") {
+        alert(`Please select ${id}.`);
+        throw new Error(`Missing selection: ${id}`);
+    }
+
+    return value;
+}
+
+async function submitApplication() {
     const payload = {
+        customer_id: getText("customer_id"),
+        customer_name: getText("customer_name"),
 
-        customer_name:
-            document.getElementById("customer_name").value,
+        age: getNumber("age"),
+        gender: getSelect("gender"),
+        education: getSelect("education"),
+        state: getSelect("state"),
+        urban_rural: getSelect("urban_rural"),
 
-        customer_id:
-            document.getElementById("customer_id").value,
+        employment_type: getSelect("employment_type"),
+        employment_years: getNumber("employment_years"),
+        annual_income_inr: getNumber("income"),
 
-        age:
-            parseInt(document.getElementById("age").value),
+        loan_type: getSelect("loan_type"),
+        loan_purpose: getSelect("loan_purpose"),
+        loan_amount_inr: getNumber("loan_amount"),
+        loan_tenure_months: getNumber("loan_tenure"),
+        interest_rate_pct: getNumber("interest_rate"),
 
-        gender:
-            document.getElementById("gender").value,
+        credit_score: getNumber("credit_score"),
+        num_existing_loans: getNumber("existing_loans"),
+        dti_ratio: getNumber("dti"),
+        ltv_ratio: getOptionalNumber("ltv"),
 
-        state:
-            document.getElementById("state").value,
+        has_collateral: Number(getSelect("has_collateral")),
+        bureau_enquiries_6m: getNumber("bureau"),
+        missed_payments_2y: getNumber("missed"),
+        savings_account_balance_inr: getNumber("savings"),
 
-        urban_rural:
-            document.getElementById("urban_rural").value,
-
-        employment_type:
-            document.getElementById("employment_type").value,
-
-        employment_years:
-            parseInt(document.getElementById("employment_years").value),
-
-        annual_income_inr:
-            parseFloat(document.getElementById("income").value),
-
-        loan_type:
-            document.getElementById("loan_type").value,
-
-        loan_purpose:
-            "General",
-
-        loan_amount_inr:
-            parseFloat(document.getElementById("loan_amount").value),
-
-        loan_tenure_months:
-            parseInt(document.getElementById("loan_tenure").value),
-
-        interest_rate_pct:
-            parseFloat(document.getElementById("interest_rate").value),
-
-        credit_score:
-            parseInt(document.getElementById("credit_score").value),
-
-        num_existing_loans:
-            parseInt(document.getElementById("existing_loans").value),
-
-        dti_ratio:
-            parseFloat(document.getElementById("dti").value),
-
-        ltv_ratio:
-            parseFloat(document.getElementById("ltv").value),
-
-        savings_account_balance_inr:
-            parseFloat(document.getElementById("savings").value),
-
-        has_collateral:
-            document.getElementById("collateral").value,
-        co_applicant_available:
-       parseInt(document.getElementById("co_applicant").value),
-
-       nominee_available:
-    parseInt(document.getElementById("nominee").value),
-        bureau_enquiries_6m:
-            parseInt(document.getElementById("bureau").value),
-
-        missed_payments_2y:
-            parseInt(document.getElementById("missed").value)
+        co_applicant_available: Number(getSelect("co_applicant_available")),
+        nominee_available: Number(getSelect("nominee_available"))
     };
 
-    const response = await fetch(
-        `${API_BASE}/assess`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        }
-    );
+    const result = await assessRisk(payload);
 
-    const result = await response.json();
+    if (!result || result.detail) {
+        document.getElementById("result").innerHTML = `
+            <p class="high"><b>Error:</b> ${JSON.stringify(result.detail)}</p>
+        `;
+        return;
+    }
 
-    document.getElementById("output").innerHTML = `
+    const riskClass =
+        result.risk_band === "HIGH" ? "high" :
+        result.risk_band === "MEDIUM" ? "medium" : "low";
 
-        <h3>${result.decision}</h3>
+    document.getElementById("result").innerHTML = `
+        <p><b>Customer:</b> ${result.customer_name} (${result.customer_id})</p>
 
-        <p>
-            <strong>Risk Score:</strong>
+        <div class="metric ${riskClass}">
             ${result.risk_percentage}%
-        </p>
+        </div>
 
-        <p>
-            <strong>Risk Band:</strong>
-            ${result.risk_band}
-        </p>
+        <p><b>Risk Classification:</b> ${result.risk_band}</p>
+        <p><b>ML Recommendation:</b> ${result.ml_decision}</p>
+        <p><b>Final Credit Decision:</b> ${result.decision}</p>
 
-        <p>
-            <strong>Recommendation:</strong>
-            ${result.recommendation}
-        </p>
+        <p><b>Recommendation:</b><br>${result.recommendation}</p>
+
+        <p><b>Model Version:</b> ${result.model_version}</p>
+        <p><b>Threshold Used:</b> ${result.threshold_used}</p>
     `;
 
-    document.getElementById("reasons").innerHTML =
-        result.reason_codes
-        .map(w => `<div class="reason">⚠ ${w}</div>`)
-        .join("");
+    document.getElementById("warnings").innerHTML = `
+        <h3>Model Reason Codes</h3>
+        ${result.reason_codes.map(reason => `<div class="reason">${reason}</div>`).join("")}
+
+        <h3>Policy Rules Triggered</h3>
+        ${result.policy_rules_triggered.map(rule => `<div class="reason">${rule}</div>`).join("")}
+    `;
+
+    const ctx = document.getElementById("riskChart");
+
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: ["Default Risk", "Remaining Confidence"],
+            datasets: [{
+                data: [
+                    result.risk_percentage,
+                    100 - result.risk_percentage
+                ],
+                backgroundColor: [
+                    "#3b82f6",
+                    "#64748b"
+                ]
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "white"
+                    }
+                }
+            }
+        }
+    });
 }
