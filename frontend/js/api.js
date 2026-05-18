@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "https://vaultsense-api.onrender.com";
 
 async function assessRisk(payload) {
     const response = await fetch(`${API_BASE}/assess`, {
